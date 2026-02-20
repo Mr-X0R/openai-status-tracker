@@ -7,9 +7,13 @@ import os
 app = FastAPI()
 
 def clean_html(raw_html):
-    """Utility to clean HTML tags out of RSS descriptions."""
-    cleanr = re.compile('<.*?>')
-    return re.sub(cleanr, '', raw_html).strip()
+    """Utility to clean HTML tags and fix spacing."""
+    # Replace line breaks and list tags with spaces to avoid smashing words together
+    text = re.sub(r'<(br|/?li|/?ul|/?p|/?div|/?h[1-6]).*?>', ' ', raw_html, flags=re.IGNORECASE)
+    # Strip all remaining tags
+    text = re.sub(r'<.*?>', '', text)
+    # Collapse multiple spaces into a single space
+    return " ".join(text.split())
 
 @app.post("/webhook")
 async def status_webhook(request: Request):
@@ -53,4 +57,5 @@ def health_check():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
+
     uvicorn.run("status_tracker:app", host="0.0.0.0", port=port)
