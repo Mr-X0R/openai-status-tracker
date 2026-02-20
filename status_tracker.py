@@ -25,7 +25,7 @@ async def status_webhook(request: Request):
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # --- Scenario A: Native Atlassian Webhook ---
-    # (Shows you know how to scale to 100+ standard providers)
+    # (This is to scale to 100+ standard providers)
     if "incident" in data:
         incident = data["incident"]
         components = incident.get("components", [])
@@ -63,4 +63,5 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
 
     uvicorn.run("status_tracker:app", host="0.0.0.0", port=port)
+
 
