@@ -44,6 +44,10 @@ async def status_webhook(request: Request):
         title = data.get("title", "Unknown Update")
         raw_description = data.get("description", "No details provided.")
         description = clean_html(raw_description)
+
+        # Prevent double "Status:" from printing
+        if description.startswith("Status:"):
+            description = description.replace("Status:", "", 1).strip()
         
         # In RSS, the title usually contains the product info and status
         print(f"[{current_time}] Product/Event: {title}")
@@ -59,3 +63,4 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
 
     uvicorn.run("status_tracker:app", host="0.0.0.0", port=port)
+
